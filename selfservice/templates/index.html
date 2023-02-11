@@ -90,10 +90,6 @@ There are no passwords for members at the moment.
 	</p>
 {% endif %}
 
-{% if user|isPettycashAdmin %}
-	<li>List of <a href='{% url "unpaired" %}'>payment stations</a> and pairing.
-{% endif %}
-
 {%if user.is_privileged %}
 	<li><a href="{% url 'newmember' %}">Add a NEW member</a>
 	<p/>

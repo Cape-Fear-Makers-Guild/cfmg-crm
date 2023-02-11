@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     "chores.apps.ChoresConfig",
     "mainssensor.apps.MainssensorConfig",
     "kwh.apps.KwhConfig",
-    "pettycash.apps.PettycashConfig",
     "ultimaker.apps.UltimakerConfig",
     "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
@@ -262,37 +261,6 @@ NETADMIN_USER_GROUP = "network admins"
 
 # REGISTRATION_OPEN = False
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-# Payment system
-#
-# When not defined - available all; but listings limited
-# will not show people with 0-balance and no transactions
-# for PETTYCASH_NOUSE_DAYS
-# PETTYCASH_DEMO_USER_GROUP = "pettycash demo group"
-PETTYCASH_NOUSE_DAYS = 60
-PETTYCASH_ADMIN_GROUP = "pettycash admin group"
-PETTYCASH_TREASURER_GROUP = "pettycash admin group"
-PETTYCASH_TOPUP = 15
-PETTYCASH_TNS = "Stichting Makerspace Leiden"
-PETTYCASH_IBAN = "NL18RABO0123459876"
-POT_ID = 1
-POT_LABEL = "Makerspace (de zwarte Pot)"
-CURRENCIES = ["EUR"]
-
-MAX_PAY_API = Money(10.00, EUR)
-MAX_PAY_DEPOSITI = Money(100.00, EUR)
-MAX_PAY_REIMBURSE = Money(100.00, EUR)
-PAY_MAXNONCE_AGE_MINUTES = 20
-
-# Days and max number of unknown terminals to keep.
-# (accepted number of terminals is unconstrained) - this
-# is just for the short period between booting one for
-# the first time and pairing it. Once we hit MAX
-# bring it back to MIN.
-#
-PETTYCASH_TERMS_MAX_UNKNOWN = 4
-PETTYCASH_TERMS_MIN_UNKNOWN = 1
-PETTYCASH_TERMS_MINS_CUTOFF = 10
 
 try:
     from .local import *
