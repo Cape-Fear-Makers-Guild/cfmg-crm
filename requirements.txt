@@ -9,8 +9,6 @@ qrcode
 django-settings-export
 django-stdimage
 django-dynamic-filenames
-django-six
-six
 django-import-export
 # django-proxy
 django-revproxy

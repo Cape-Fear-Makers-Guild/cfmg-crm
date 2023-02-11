@@ -27,7 +27,6 @@ from django.conf import settings
 import logging
 import json
 import sys
-import six
 
 from members.models import User
 from acl.models import Machine, Entitlement, PermitType
@@ -79,11 +78,7 @@ def send_email_verification(
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
-        return (
-            six.text_type(user.pk)
-            + six.text_type(timestamp)
-            + six.text_type(user.email)
-        )
+        return str(user.pk) + str(timestamp) + str(user.email)
 
 
 email_check_token = AccountActivationTokenGenerator()
