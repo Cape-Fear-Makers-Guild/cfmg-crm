@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     "chores.apps.ChoresConfig",
     "mainssensor.apps.MainssensorConfig",
     "kwh.apps.KwhConfig",
-    "ultimaker.apps.UltimakerConfig",
     "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -105,8 +104,6 @@ SETTINGS_EXPORT = [
     "GRAND_AMNESTY",
     "ML_ADMINURL",
     "STORAGE",
-    "POT_ID",
-    "POT_LABEL",
     "TRUSTEES",
 ]
 
