@@ -92,7 +92,6 @@ class Machine(models.Model):
         blank=True,
         null=True,
     )
-    requires_instruction = models.BooleanField(default=False)
     requires_form = models.BooleanField(default=False)
     requires_permit = models.ForeignKey(
         PermitType,

@@ -100,7 +100,6 @@ class Command(BaseCommand):
                     machine.description = "The " + w + " machine"
                     # machine.location = loc
                     machine.requires_form = True
-                    machine.requires_instruction = True
                     machine.requires_permit = permit
                     self.stdout.write("Machine imported {}".format(w))
                     # loc.save()

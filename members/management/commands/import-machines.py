@@ -12,8 +12,8 @@ import argparse
 """ 
 Imports tool/machine information according to the following table format:
 
-| Name       | instruction-req | permit-req | permit-type | description | location  |
-| 3D printer | 1               | 0          |             | 3D-Printer  | Frontroom |
+| Name       | permit-req | permit-type | description | location  |
+| 3D printer | 0          |             | 3D-Printer  | Frontroom |
 """
 
 
@@ -28,7 +28,6 @@ class Command(BaseCommand):
             for line in file:
                 lineData = {
                     "Name": None,
-                    "instructionsRequired": None,
                     "permitRequired": None,
                     "permit": None,
                     "description": None,
@@ -40,14 +39,13 @@ class Command(BaseCommand):
 
                 (
                     lineData["Name"],
-                    lineData["instructionsRequired"],
                     lineData["permitRequired"],
                     lineData["permit"],
                     lineData["description"],
                     lineData["Location"],
                 ) = line.split(
                     ","
-                )  # name, instructionsRequired, permitRequired, permit, desc, location
+                )  # name, permitRequired, permit, desc, location
 
                 if lineData["Name"] == "name" or lineData["Name"].startswith("#"):
                     continue

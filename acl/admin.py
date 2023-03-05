@@ -23,7 +23,6 @@ class MachineAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         "node_machine_name",
         "description",
         "location",
-        "requires_instruction",
         "requires_form",
         "requires_permit",
     )

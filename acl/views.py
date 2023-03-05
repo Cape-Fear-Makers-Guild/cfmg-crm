@@ -39,7 +39,6 @@ def matrix_mm(machine, member):
     out = {"xs": False, "instructions_needed": False, "tags": []}
     out["mid"] = machine.id
 
-    out["requires_instruction"] = machine.requires_instruction
     out["requires_permit"] = machine.requires_permit
     out["requires_form"] = machine.requires_form
     out["out_of_order"] = machine.out_of_order
@@ -83,7 +82,6 @@ def matrix_m(machine):
 def api_index(request):
     lst = Machine.objects.order_by()
     perms = {}
-    instructions = []
     ffa = []
     for m in lst:
         if m.requires_permit:
@@ -91,15 +89,11 @@ def api_index(request):
                 perms[m.requires_permit.name] = []
             perms[m.requires_permit.name].append(m)
         else:
-            if m.requires_instruction:
-                instructions.append(m)
-            else:
-                ffa.append(m)
+            ffa.append(m)
 
     context = {
         "lst": lst,
         "perms": perms,
-        "instructions": instructions,
         "freeforall": ffa,
         "has_permission": request.user.is_authenticated,
     }
@@ -492,7 +486,6 @@ def api_getok(request, machine=None):
         if tag.description:
             out["tag"] = tag.description
 
-        out["requires_instruction"] = machine.requires_instruction
         out["requires_permit"] = str(machine.requires_permit)
         out["requires_form"] = machine.requires_form
         out["machine"] = str(machine)
