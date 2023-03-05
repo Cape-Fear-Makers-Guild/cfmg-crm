@@ -12,7 +12,8 @@ as it reveals the tags.
 <ul>
     {% for p in lst %}
     <li> <a href="{% url 'machine_overview' p.id %}">{{ p.name }}</a>
-    (<i> {{ p.description }} </i>)
+    (<i>{{ p.description }}</i>)
+    [id={{p.id}}]
     <a href="{{p.id}}">[tags]</a>
     {% endfor %}
 </ul>
@@ -39,7 +40,7 @@ as it reveals the tags.
     <p>none</p>
 {% endif %}
 
-<h2>Free for al</h2>
+<h2>Free for all</h2>
 {% if freeforall %}
 <ul>
     {% for m in freeforall %}
