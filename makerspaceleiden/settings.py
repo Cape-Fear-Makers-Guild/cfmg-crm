@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     "mailinglists.apps.MailinglistsConfig",
     "chores.apps.ChoresConfig",
     "mainssensor.apps.MainssensorConfig",
-    "kwh.apps.KwhConfig",
     "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
