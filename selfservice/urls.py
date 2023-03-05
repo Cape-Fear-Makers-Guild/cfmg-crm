@@ -54,5 +54,5 @@ urlpatterns = [
     ),
 ]
 
-if settings.GRAND_AMNESTY:
+if settings.GRANT_AMNESTY:
     urlpatterns.append(path("amnety", views.amnesty, name="amnesty"))

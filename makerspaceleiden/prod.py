@@ -107,7 +107,7 @@ with open("/etc/crm_v1_ss.txt") as f:
 with open("/etc/crm_uk_bearer_secret.txt") as f:
     UT_BEARER_SECRET = f.read().strip()
 
-GRAND_AMNESTY = False
+GRANT_AMNESTY = False
 
 ML_ADMINURL = "https://mailman.makerspaceleiden.nl/mailman"
 with open("/etc/crm_ml_secret.txt") as f:

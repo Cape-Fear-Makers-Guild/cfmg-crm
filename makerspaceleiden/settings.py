@@ -28,7 +28,7 @@ ALLOWED_HOSTS = ["10.11.0.158", "*"]
 # Allow users to create their own entitlement as a one off
 # bootstrapping thing.
 #
-GRAND_AMNESTY = True
+GRANT_AMNESTY = True
 
 # Harsher way to exclude storage module / top level
 STORAGE = False
@@ -99,7 +99,7 @@ TEMPLATES = [
 ]
 
 SETTINGS_EXPORT = [
-    "GRAND_AMNESTY",
+    "GRANT_AMNESTY",
     "ML_ADMINURL",
     "STORAGE",
     "TRUSTEES",

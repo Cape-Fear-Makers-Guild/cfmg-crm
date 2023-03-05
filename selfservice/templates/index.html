@@ -61,9 +61,9 @@ There are no passwords for members at the moment.
 {%endif %}
 {%endif %}
     <li><a href="{% url 'userdetails' %}">Update your personal details</a>
-    <li><a href="{% url 'password_change' %}">change your password</a>
-{%if settings.GRAND_AMNESTY %}
-    <li><a href="{% url 'amnesty' %}">Grand amnesty</a>
+    <li><a href="{% url 'password_change' %}">Change your password</a>
+{%if settings.GRANT_AMNESTY %}
+    <li><a href="{% url 'amnesty' %}">Grant amnesty</a>
 {%endif %}
 <p/>
 <!--    <li><a href="{% url 'members-index' %}">All machines that require instruction</a> -->

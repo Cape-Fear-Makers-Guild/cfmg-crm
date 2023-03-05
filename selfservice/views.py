@@ -808,7 +808,7 @@ def amnesty(request):
             )
             if created:
                 e.changeReason = (
-                    "Added through the grand amnesty interface by {0}".format(
+                    "Added through the grant amnesty interface by {0}".format(
                         request.user
                     )
                 )
