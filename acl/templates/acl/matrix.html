@@ -3,6 +3,7 @@
 {% block content %}
 {% if machines.count == 1 %}
 <h1><hr/>XS matrix for {{ machines.first }} <hr/></h1>
+<h2><hr/>Machine Info<hr/></h2>
 <table>
 	<tr><td alight=right>Machine: </td><td>{{ machines.first.name }}
 {% if machines.first.out_of_order %}
@@ -45,7 +46,7 @@
 		</td></tr>
 		<tr><td alight=right>Instruction: </td>
 			<td>{% if machines.first.requires_permit %}
-				Instructions are required ({{ machines.first.requires_permit }}).<p/>
+				Instructions/permits are required ({{ machines.first.requires_permit }}).<p/>
 			{% if instructors %}
 			<br/>Instructions can be given by:
 			<ol>
@@ -66,6 +67,7 @@
 			{% endif %}
 			</td></tr>
 </table>
+<h2><hr/>Users With Access<hr/></h2>
 {% else %}
 <h1><hr/>Full access and instruction matrix<hr/></h1>
 {% endif %}
