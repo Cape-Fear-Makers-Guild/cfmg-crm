@@ -74,7 +74,6 @@ There are no passwords for members at the moment.
 {%  if settings.STORAGE %}
     <li><a href="{% url 'storage' %}">Storage management</a>
 {% endif %}
-    <li><a href="{% url 'chores' %}">Chores</a>
     <p/>
 {% if request.user|isMainsAdmin or user.is_privileged %}
     <li> Lucas MainsSensors : <a href="{% url 'mainsindex' %}">admin interface</a>

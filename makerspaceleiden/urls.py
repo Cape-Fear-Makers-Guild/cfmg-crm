@@ -36,7 +36,6 @@ urlpatterns = [
     path("mailinglists/", include("mailinglists.urls")),
     path("storage/", include("storage.urls")),
     path("boxes/", include("memberbox.urls")),
-    path("chores/", include("chores.urls")),
     #   url(r'^autocomplete/', include('autocomplete_light.urls')),
     path("admin/", admin.site.urls),
     #   path('qr_code/', include(qr_code_urls, namespace='qr_code')),
