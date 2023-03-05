@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     "acl.apps.AclConfig",
     "selfservice.apps.SelfserviceConfig",
     "kiosk.apps.KioskConfig",
-    "ufo.apps.UfoConfig",
     "unknowntags.apps.UnknowntagsConfig",
     "servicelog.apps.ServicelogConfig",
     "mailinglists.apps.MailinglistsConfig",
@@ -214,9 +213,6 @@ IMG_VARIATIONS = {
     "large": (600, 400),
 }
 
-UFO_DEADLINE_DAYS = 14
-UFO_DISPOSE_DAYS = 7
-
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -230,8 +226,7 @@ CACHES = {
 
 QR_CODE_CACHE_ALIAS = "qr-code"
 
-# Set to a list to be kept informed of things like UFO
-# deadlines and what not.
+# Set to a list to be kept informed of things
 #
 ALSO_INFORM_EMAIL_ADDRESSES = []
 
