@@ -78,6 +78,7 @@ class Machine(models.Model):
     node_name = NodeField(
         max_length=20, blank=True, help_text="Name of the controlling node"
     )
+    # TODO: make this required or auto-populate it based on the name
     node_machine_name = NodeField(
         max_length=20,
         blank=True,

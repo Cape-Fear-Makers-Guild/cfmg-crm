@@ -154,6 +154,8 @@ def recordinstructions(request):
     members = User.objects.filter(is_active=True)
     machines = Machine.objects.all().exclude(requires_permit=None)
 
+    # TODO: switch this to showing Permits rather than Machines
+
     # Only show machine we are entitled for ourselves.
     #
     if not request.user.is_privileged:
