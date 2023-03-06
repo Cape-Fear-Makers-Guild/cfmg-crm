@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # @superuser_or_bearer_required
 def resolve(request, tag=None):
     if request.POST:
-        return HttpResponse("XS denied\n", status=403, content_type="text/plain")
+        return HttpResponse("Access denied\n", status=403, content_type="text/plain")
 
     if tag:
         try:

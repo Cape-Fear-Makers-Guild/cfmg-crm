@@ -50,7 +50,7 @@ def mailinglists_edit(request, user_id=None):
             return HttpResponse("User not found", status=404, content_type="text/plain")
 
     if user != request.user and request.user.is_privileged != True:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     lists = Mailinglist.objects.all()
     subs = Subscription.objects.all().filter(member=user)

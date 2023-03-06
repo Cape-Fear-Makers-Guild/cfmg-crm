@@ -49,7 +49,7 @@ def index(request):
 @login_required
 def newmember(request):
     if not request.user.is_privileged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     if request.POST:
         form = NewUserForm(request.POST)
@@ -151,7 +151,7 @@ def newmember(request):
 @login_required
 def sudo(request):
     if not request.user.can_escalate_to_priveleged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     if request.POST:
         form = NewAuditRecordForm(request.POST)
@@ -194,7 +194,7 @@ def sudo(request):
 
 def drop(request):
     if not request.user.can_escalate_to_priveleged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     record = AuditRecord(
         user=request.user, final=True, action="Drop privs from webinterface"

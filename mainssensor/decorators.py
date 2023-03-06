@@ -16,6 +16,6 @@ def superuser_or_mainsadmin_required(function):
                 or request.user.groups.filter(name=settings.SENSOR_USER_GROUP).exists()
             ):
                 return function(request, *args, **kwargs)
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap

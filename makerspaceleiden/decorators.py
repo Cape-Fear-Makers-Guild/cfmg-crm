@@ -48,7 +48,7 @@ def superuser(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
@@ -63,7 +63,7 @@ def superuser_or_bearer_required(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
@@ -88,7 +88,7 @@ def user_or_kiosk_required(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
