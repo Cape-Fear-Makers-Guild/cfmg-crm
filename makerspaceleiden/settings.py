@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "unknowntags.apps.UnknowntagsConfig",
     "servicelog.apps.ServicelogConfig",
     "mailinglists.apps.MailinglistsConfig",
-    "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

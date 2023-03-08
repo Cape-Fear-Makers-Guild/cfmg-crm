@@ -34,7 +34,6 @@ urlpatterns = [
     path("servicelog/", include("servicelog.urls")),
     path("mailinglists/", include("mailinglists.urls")),
     path("admin/", admin.site.urls),
-    path("spaceapi/", include("spaceapi.urls")),
 ]
 
 urlpatterns += static(r"/favicon.ico", document_root="static/favicon.ico")
