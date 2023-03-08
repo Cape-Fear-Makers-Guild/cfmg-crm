@@ -28,7 +28,6 @@ urlpatterns = [
     path("", include("selfservice.urls")),
     path("", include("kiosk.urls")),
     path("", include("unknowntags.urls")),
-    path("", include("mainssensor.urls")),
     path("", include("django.contrib.auth.urls")),
     path("", include("acl.urls")),
     path("members/", include("members.urls")),

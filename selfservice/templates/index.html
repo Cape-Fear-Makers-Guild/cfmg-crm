@@ -74,12 +74,6 @@ There are no passwords for members at the moment.
     <li><a href="{% url 'storage' %}">Storage management</a>
 {% endif %}
     <p/>
-{% if request.user|isMainsAdmin or user.is_privileged %}
-    <li> Lucas MainsSensors : <a href="{% url 'mainsindex' %}">admin interface</a>
-    <li> List of <a href="/crm/api/v1/mainssensor/resolve">sensors</a> names, descriptions and IDs.
-        <li> Or alternatively use ...<code>//crm/api/v1/mainssensor/resolve/1234</code> to get just the name (decimal number).
-    </p>
-{% endif %}
 
 {%if user.is_privileged %}
     <li><a href="{% url 'newmember' %}">Add a NEW member</a>

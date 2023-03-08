@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "unknowntags.apps.UnknowntagsConfig",
     "servicelog.apps.ServicelogConfig",
     "mailinglists.apps.MailinglistsConfig",
-    "mainssensor.apps.MainssensorConfig",
     "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -245,7 +244,6 @@ ML_PASSWORD = "Foo"
 ML_ADMINURL = "https://mailman.foo.com/mailman"
 
 # Extact spelling as created in 'group' through the /admin/ interface.
-SENSOR_USER_GROUP = "mains Sensor Admins"
 NETADMIN_USER_GROUP = "network admins"
 
 
