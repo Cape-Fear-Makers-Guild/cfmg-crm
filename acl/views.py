@@ -27,9 +27,6 @@ from mailinglists.models import Mailinglist, Subscription
 
 from .models import Machine, Entitlement, PermitType, RecentUse
 
-from storage.models import Storage
-from memberbox.models import Memberbox
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -224,8 +221,6 @@ def member_overview(request, member_id=None):
         )
 
     machines = Machine.objects.order_by()
-    boxes = Memberbox.objects.all().filter(owner=member)
-    storage = Storage.objects.all().filter(owner=member)
     subscriptions = Subscription.objects.all().filter(member=member)
 
     normal_permits = {}
@@ -246,8 +241,6 @@ def member_overview(request, member_id=None):
         "title": member.first_name + " " + member.last_name,
         "member": member,
         "machines": machines,
-        "storage": storage,
-        "boxes": boxes,
         "lst": lst,
         "permits": specials,
         "subscriptions": subscriptions,

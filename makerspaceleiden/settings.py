@@ -30,8 +30,6 @@ ALLOWED_HOSTS = ["10.11.0.158", "*"]
 #
 GRANT_AMNESTY = True
 
-# Harsher way to exclude storage module / top level
-STORAGE = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,8 +39,6 @@ INSTALLED_APPS = [
     "qr_code",
     "djmoney",
     "makerspaceleiden",
-    "storage.apps.StorageConfig",
-    "memberbox.apps.MemberboxConfig",
     "members.apps.UserConfig",
     "acl.apps.AclConfig",
     "selfservice.apps.SelfserviceConfig",
@@ -99,7 +95,6 @@ TEMPLATES = [
 SETTINGS_EXPORT = [
     "GRANT_AMNESTY",
     "ML_ADMINURL",
-    "STORAGE",
     "TRUSTEES",
 ]
 
@@ -227,11 +222,6 @@ QR_CODE_CACHE_ALIAS = "qr-code"
 # Set to a list to be kept informed of things
 #
 ALSO_INFORM_EMAIL_ADDRESSES = []
-
-# Once a person has this many storage requests - the email
-# to the list gets an extra element highlihgting this; with
-# a ling to what the person also has in store
-STORAGE_HIGHLIGHT_LIMIT = 3
 
 UT_BEARER_SECRET = "not-so-very-secret-127.0.0.1"
 

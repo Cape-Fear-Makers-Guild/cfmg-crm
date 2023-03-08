@@ -4,8 +4,6 @@ from simple_history.models import HistoricalRecords
 from members.models import User
 from members.models import Tag, User
 from acl.models import Machine, Location, PermitType, Entitlement
-from memberbox.models import Memberbox
-from storage.models import Storage
 
 import argparse
 

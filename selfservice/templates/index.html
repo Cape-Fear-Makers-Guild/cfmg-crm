@@ -69,10 +69,6 @@ There are no passwords for members at the moment.
 <!--    <li><a href="{% url 'members-index' %}">All machines that require instruction</a> -->
     <li><a href="{% url 'machine_list' %}">All machines</a>
 <p/>
-    <li><a href="{% url 'boxes' %}">Members box management</a>
-{%  if settings.STORAGE %}
-    <li><a href="{% url 'storage' %}">Storage management</a>
-{% endif %}
     <p/>
 
 {%if user.is_privileged %}

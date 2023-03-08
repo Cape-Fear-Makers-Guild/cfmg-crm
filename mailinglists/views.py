@@ -32,9 +32,6 @@ from acl.models import Machine, Entitlement, PermitType
 
 from .models import Mailinglist, Subscription
 
-from storage.models import Storage
-from memberbox.models import Memberbox
-
 import logging
 
 logger = logging.getLogger(__name__)

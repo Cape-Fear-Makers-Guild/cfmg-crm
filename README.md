@@ -23,8 +23,6 @@ and login using the accounts created & shown to you during the loaddemo.sh scrip
 
 -	Overview rfid cards
 
--	Reports on bins & (big/overdue) storage permits.
-
 ## API
 
 -	lists or OK/deny on tag's.
@@ -53,10 +51,6 @@ and login using the accounts created & shown to you during the loaddemo.sh scrip
 -	location members bin
 		visible to all
 
--	storage permits & durations for things that do not fit in the members bin.
-		request
-		visible to all
-
 -	track ordering of spares.
 
 ## Non functional requirements
@@ -69,11 +63,6 @@ and login using the accounts created & shown to you during the loaddemo.sh scrip
 
 - User changes his/her details -> email trustees
 - Someone adds instructions -> email trustees ? deelnemers ?
-- Any mutations on storage space - email deelnemers
-  Email owner separare if the change is made by someone else but the owner.
-  Email trusteeds if > 30 days or extension on a auto-approve 30 days.
-- Box changes - email trusteeds
-  Email owner separare if the change is made by someone else but the owner.
 
 # Current design
 
