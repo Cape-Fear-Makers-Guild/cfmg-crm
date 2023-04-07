@@ -42,10 +42,8 @@ INSTALLED_APPS = [
     "members.apps.UserConfig",
     "acl.apps.AclConfig",
     "selfservice.apps.SelfserviceConfig",
-    "kiosk.apps.KioskConfig",
     "unknowntags.apps.UnknowntagsConfig",
     "servicelog.apps.ServicelogConfig",
-    "mailinglists.apps.MailinglistsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -99,10 +97,8 @@ SETTINGS_EXPORT = [
 
 WSGI_APPLICATION = "makerspaceleiden.wsgi.application"
 
-MAILINGLIST = "deelnemers@makerspaceleiden.nl"
 TRUSTEES = "hetbestuur@makerspaceleiden.nl"
 
-DEFAULT_FROM_EMAIL = "noc@makerspaceleiden.nl"
 # Leave it to FORCE_SCRPT do do the psotfix right
 BASE = "https://makerspaceleiden.nl"
 

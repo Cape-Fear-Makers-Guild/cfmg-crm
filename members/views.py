@@ -16,7 +16,6 @@ from .forms import NewUserForm, NewAuditRecordForm
 
 from acl.models import Entitlement, PermitType
 from members.models import Tag, User, clean_tag_string, AuditRecord
-from mailinglists.models import Mailinglist, Subscription
 
 import logging
 import datetime
@@ -87,35 +86,6 @@ def newmember(request):
                         activate=form.cleaned_data.get("activate_doors"),
                     )
 
-                # Subscribe user if needed
-                for mlist_name in form.cleaned_data.get("mailing_lists"):
-                    try:
-                        mlist = Mailinglist.objects.get(name=mlist_name)
-                        s = Subscription.objects.create(
-                            mailinglist=mlist,
-                            member=newmember,
-                            active=True,
-                            digest=False,
-                        )
-                        s.subscribe()
-                        # s.changeReason("Subscribed during form based new user create")
-                        s.save()
-                    except Exception as e:
-                        logger.error(
-                            "Failed to subscribe user {} to {} : {}".format(
-                                request.user, mlist_name, e
-                            )
-                        )
-
-                # Send welcome email.
-                form = PasswordResetForm({"email": newmember.email})
-                if not form.is_valid():
-                    raise Exception("Internal issue")
-                form.save(
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    email_template_name="members/email_newmembers_invite.txt",
-                    subject_template_name="members/email_newmembers_invite_subject.txt",
-                )
                 return redirect("index")
             except IntegrityError as e:
                 logger.error("Failed to create user : {}".format(e))

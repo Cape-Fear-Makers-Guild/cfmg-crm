@@ -61,51 +61,6 @@ Last record change: {{ member.history.first.history_date }} {{ member.history.fi
 	{% endif %}
 	{% endif %}
 
-    <tr><td colspan=2><h3>Subscriptions</h3></td></tr>
-{% for sub in subscriptions %}
-        <tr><td align=right>{{sub.mailinglist.name}}</td><td><i>{{sub.mailinglist.description}}</i>
-	<br/>Subscribed:
-	{%if sub.active %}
-		yes
-	{% else %}
-		no
-	{% endif %}
-	<br/>Digest
-	{%if sub.digest %}
-		yes
-	{% else %}
-		no, receive in real time
-	{% endif %}
-	<p/></td></tr>
-{% endfor %}
-{%if member == user %}
-	<tr><td></td><td><a href="{% url 'mailinglists_edit'  user_id=member.id %}">[edit]</a> your subscriptions</td></tr>
-{% else %}
-{%if  user.is_privileged %}
-	<tr><td></td><td><a href="{% url 'mailinglists_edit'  user_id=member.id %}">[edit]</a> the subscriptions of {{ member.name }}</td></tr>
-{% endif %}
-{% endif %}
-    
-    {%if member == user %}
-    <tr><td colspan=2><h3>Notifications</h3></td></tr>
-	<tr><td></td><td>
-        <p>
-            The system can occasionally send you reminders when you forget to check-out, leave machines turned on, or other useful warnings.
-        </p>
-        <p>
-            Currently using:
-            <ul>
-                <li>Email: {% if uses_email %} <b style="color: green;">ACTIVE</b> {% else %} inactive {% endif %}</li>
-                <li>Telegram: {% if uses_telegram %} <b style="color: green;">ACTIVE</b> {% else %} inactive {% endif %}</li>
-                <li>Signal: {% if uses_signal %} <b style="color: green;">ACTIVE</b> {% else %} inactive {% endif %}</li>
-            </ul>
-        </p>
-        <p>
-            <a href="{% url 'notification_settings' %}">[ Edit notification settings ]</a>
-        </p>
-	</td><td>
-    {% endif %}
-
 	{%if permits %}
 	<tr><td colspan=2><h3>Special Permits and Instructions</h3></tr>
 	{%for p in permits %}

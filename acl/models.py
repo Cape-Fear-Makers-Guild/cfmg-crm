@@ -283,29 +283,6 @@ class Entitlement(models.Model):
             except EntitlementNotFound:
                 pass
 
-        if not self.active and self.permit.permit:
-            try:
-                context = {
-                    "holder": self.holder,
-                    "issuer": self.issuer,
-                    "permit": self.permit,
-                    "domain": current_site.domain,
-                }
-
-                subject = render_to_string(
-                    "acl/notify_trustees_subject.txt", context
-                ).strip()
-                body = render_to_string("acl/notify_trustees.txt", context)
-
-                EmailMessage(
-                    subject,
-                    body,
-                    to=[self.issuer.email, settings.TRUSTEES, "dirkx@webweaving.org"],
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                ).send()
-            except Exception as e:
-                logger.critical("Failed to sent an email: {}".format(str(e)))
-
         # should we check for duplicates here too ?
         #
         return super(Entitlement, self).save(*args, **kwargs)

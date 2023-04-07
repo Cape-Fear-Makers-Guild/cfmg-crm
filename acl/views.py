@@ -23,8 +23,6 @@ from ipware import get_client_ip
 from members.models import Tag, User, clean_tag_string
 from members.forms import TagForm
 
-from mailinglists.models import Mailinglist, Subscription
-
 from .models import Machine, Entitlement, PermitType, RecentUse
 
 import logging
@@ -221,7 +219,6 @@ def member_overview(request, member_id=None):
         )
 
     machines = Machine.objects.order_by()
-    subscriptions = Subscription.objects.all().filter(member=member)
 
     normal_permits = {}
     for m in machines:
@@ -243,7 +240,6 @@ def member_overview(request, member_id=None):
         "machines": machines,
         "lst": lst,
         "permits": specials,
-        "subscriptions": subscriptions,
         "user": request.user,
         "has_permission": request.user.is_authenticated,
     }
