@@ -35,8 +35,6 @@ from selfservice.forms import (
     SignalNotificationSettingsForm,
     EmailNotificationSettingsForm,
 )
-from .models import WiFiNetwork
-from .waiverform.waiverform import generate_waiverform_fd
 
 
 def send_email_verification(
@@ -93,7 +91,6 @@ def index(request):
     if request.user.is_authenticated:
         context["is_logged_in"] = request.user.is_authenticated
         context["member"] = request.user
-        context["wifinetworks"] = WiFiNetwork.objects.order_by("network")
 
     return render(request, "index.html", context)
 
@@ -320,33 +317,6 @@ def confirmemail(request, uidb64, token, newemail):
 
     # return redirect('userdetails')
     return render(request, "email_verification_ok.html")
-
-
-@login_required
-def waiverformredir(request):
-    return redirect("waiverform", user_id=request.user.id)
-
-
-@login_required
-def waiverform(request, user_id=None):
-    try:
-        member = User.objects.get(pk=user_id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-    confirmation_url = request.build_absolute_uri(
-        reverse("waiver_confirmation", kwargs=dict(user_id=user_id))
-    )
-    name = f"{member.first_name} {member.last_name}"
-    safename = re.sub("\W+", "-", name)
-
-    fd = generate_waiverform_fd(member.id, name, confirmation_url)
-
-    response = HttpResponse(fd.getvalue(), status=200, content_type="application/pdf")
-    response[
-        "Content-Disposition"
-    ] = f'attachment; filename="MSL-Waiver-{safename}.pdf"'
-
-    return response
 
 
 @login_required

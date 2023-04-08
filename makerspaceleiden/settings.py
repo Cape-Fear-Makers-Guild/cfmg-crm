@@ -7,7 +7,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import locale
-from moneyed import Money, EUR
 
 os.umask(2)
 
@@ -36,8 +35,6 @@ INSTALLED_APPS = [
     "import_export",
     "simple_history",
     "search_admin_autocomplete",
-    "qr_code",
-    "djmoney",
     "makerspaceleiden",
     "members.apps.UserConfig",
     "acl.apps.AclConfig",
@@ -50,9 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    #    'autocomplete_light',
     "django.contrib.sites",
-    "revproxy",
 ]
 
 SITE_ID = 1
@@ -211,8 +206,6 @@ CACHES = {
         "TIMEOUT": 3600,
     },
 }
-
-QR_CODE_CACHE_ALIAS = "qr-code"
 
 # Set to a list to be kept informed of things
 #

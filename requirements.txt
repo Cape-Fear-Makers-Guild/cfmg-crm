@@ -11,7 +11,6 @@ django-stdimage
 django-dynamic-filenames
 django-import-export
 # django-proxy
-django-revproxy
 
 # We're also including Pillow  as otherwise QR will fall back
 # to SVG - which is not as supported.
@@ -24,21 +23,11 @@ django-qr-code
 # Determine client IP address
 django-ipware
 
-# PDF generation
-reportlab
-PyPDF2
-
-# Mailman scraping API
-lxml
-
 # JSON fields in the DB model
 jsonfield2
 
 # For production
 # mysqlclient
-
-# Petty cash
-django-money
 
 # Reverse proxy for the 3D printers
 requests

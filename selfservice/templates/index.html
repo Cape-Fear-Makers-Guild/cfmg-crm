@@ -4,46 +4,6 @@
 {% block content %}
 
 {% if is_logged_in %}
-{% if wifinetworks %}
-<script>
-function showPw(fld) {
-  var x = document.getElementById(fld);
-  if (x.type === "password") {
-    x.type = "text";
-    window.setTimeout(function() { showPw(fld); }, 3000);
-  } else {
-    x.type = "password";
-  }
-}
-</script>
-<p>Passwords for members only:</p>
-<blockquote>
-<table>
-<tr><th>network/use</th><th>password</th></tr>
-{% for e in wifinetworks %}
-{%if not e.adminsonly or user|isNetAdmin or user.is_privileged %}
-  <tr>
-    <td align=left><input size=32 style="border:none" type=text value="{{ e.network }}">
-        {%if e.adminsonly %}<font color="red">*</font>{% endif %}
-    </td>
-    <td align=left><input size=32 style="border:none; font-family: monospace;" value="{{ e.password }}" id="{{ e.network }}"
-        {% if e.adminsonly %}
-        type="password"/><input style="padding:5px" type=button value=show onClick="showPw('{{ e.network }}');"
-    {%endif%}
-    />
-    </td>
-  </tr>
-{% endif %}
-{% endfor %}
-</table>
-</blockquote>
-{% if user|isNetAdmin %}
-<p/>
-<i><font color=red>*)</font><i> This password is only visible to network administrators. Of which you are one. Do not share outside this group - or consult with one of the trustees first.</i><p/>
-{% endif %}
-{% else %}
-There are no passwords for members at the moment.
-{% endif %}
 <h2>Manage your data</h2>
 <p>
 <ul>

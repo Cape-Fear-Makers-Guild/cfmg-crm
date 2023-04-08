@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-{% load qr_code  %}
 {% block content %}
 
 {% if member.image %}
@@ -24,7 +23,6 @@ Last record change: {{ member.history.first.history_date }} {{ member.history.fi
 		<p/>
 		{% endif %}
 		</td>
-		<td valign=top rowspan=5 align=center>{% qr_from_text member.url size="m" border=1 %}<br/><code><font size=-3>{{ member.url }}</font></center></td>
 	</tr>
 {% if member.image %}
 	<!-- image is outside the table - above it -->
@@ -48,9 +46,6 @@ Last record change: {{ member.history.first.history_date }} {{ member.history.fi
         {%endif %}
 	<tr><td align=right>Waiver on file</td><td>
 			{%if member.form_on_file %} yes {% else %} no
-	{%if member == user or  user.is_privileged %}
-  		<a href="{% url 'waiverform' user_id=member.id %}" target="_blank">[ Download form ]</a>, read, sign and then delivery or mail to the address on the form.
-	{% endif %}
 {% endif %}
 			</td></tr>
 	{%if member.is_superuser %}
