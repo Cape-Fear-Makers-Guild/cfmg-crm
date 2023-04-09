@@ -86,11 +86,6 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": True,
         },
-        "mailinglists": {
-            "handlers": ["file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
         "": {
             "handlers": ["file"],
             "propagate": True,
@@ -107,12 +102,10 @@ with open("/etc/crm_v1_ss.txt") as f:
 with open("/etc/crm_uk_bearer_secret.txt") as f:
     UT_BEARER_SECRET = f.read().strip()
 
-GRAND_AMNESTY = False
+GRANT_AMNESTY = False
 
 ML_ADMINURL = "https://mailman.makerspaceleiden.nl/mailman"
 with open("/etc/crm_ml_secret.txt") as f:
     ML_PASSWORD = f.read().strip()
-
-PETTYCASH_IBAN = "NL30TRIO0197694519"
 
 POT_ID = 63

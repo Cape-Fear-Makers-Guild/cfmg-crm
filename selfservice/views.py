@@ -27,7 +27,6 @@ from django.conf import settings
 import logging
 import json
 import sys
-import six
 
 from members.models import User
 from acl.models import Machine, Entitlement, PermitType
@@ -36,9 +35,6 @@ from selfservice.forms import (
     SignalNotificationSettingsForm,
     EmailNotificationSettingsForm,
 )
-from .models import WiFiNetwork
-from .waiverform.waiverform import generate_waiverform_fd
-from .aggregator_adapter import get_aggregator_adapter
 
 
 def send_email_verification(
@@ -79,11 +75,7 @@ def send_email_verification(
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
-        return (
-            six.text_type(user.pk)
-            + six.text_type(timestamp)
-            + six.text_type(user.email)
-        )
+        return str(user.pk) + str(timestamp) + str(user.email)
 
 
 email_check_token = AccountActivationTokenGenerator()
@@ -99,10 +91,6 @@ def index(request):
     if request.user.is_authenticated:
         context["is_logged_in"] = request.user.is_authenticated
         context["member"] = request.user
-        context["wifinetworks"] = WiFiNetwork.objects.order_by("network")
-        context["mainsadmin"] = request.user.groups.filter(
-            name=settings.SENSOR_USER_GROUP
-        ).exists()
 
     return render(request, "index.html", context)
 
@@ -158,6 +146,8 @@ def recordinstructions(request):
     # keep the option open to `do bulk adds
     members = User.objects.filter(is_active=True)
     machines = Machine.objects.all().exclude(requires_permit=None)
+
+    # TODO: switch this to showing Permits rather than Machines
 
     # Only show machine we are entitled for ourselves.
     #
@@ -330,33 +320,6 @@ def confirmemail(request, uidb64, token, newemail):
 
 
 @login_required
-def waiverformredir(request):
-    return redirect("waiverform", user_id=request.user.id)
-
-
-@login_required
-def waiverform(request, user_id=None):
-    try:
-        member = User.objects.get(pk=user_id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-    confirmation_url = request.build_absolute_uri(
-        reverse("waiver_confirmation", kwargs=dict(user_id=user_id))
-    )
-    name = f"{member.first_name} {member.last_name}"
-    safename = re.sub("\W+", "-", name)
-
-    fd = generate_waiverform_fd(member.id, name, confirmation_url)
-
-    response = HttpResponse(fd.getvalue(), status=200, content_type="application/pdf")
-    response[
-        "Content-Disposition"
-    ] = f'attachment; filename="MSL-Waiver-{safename}.pdf"'
-
-    return response
-
-
-@login_required
 def confirm_waiver(request, user_id=None):
     try:
         operator_user = request.user
@@ -383,330 +346,6 @@ def confirm_waiver(request, user_id=None):
     member.save()
 
     return render(request, "waiver_confirmation.html", {"member": member})
-
-
-@login_required
-def telegram_connect(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    token = aggregator_adapter.generate_telegram_connect_token(user.id)
-    return HttpResponse(token, status=200, content_type="text/plain")
-
-
-@login_required
-def telegram_disconnect(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    aggregator_adapter.disconnect_telegram(user.id)
-    return render(
-        request,
-        "telegram_disconnect.html",
-        {
-            "title": "Telegram BOT",
-        },
-    )
-
-
-@login_required
-def signal_disconnect(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    user.uses_signal = False
-    user.save()
-
-    return render(
-        request,
-        "signal_disconnect.html",
-        {
-            "title": "Signal BOT",
-        },
-    )
-
-
-@login_required
-def notification_settings(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    signal_form = SignalNotificationSettingsForm(instance=user)
-    email_form = EmailNotificationSettingsForm(instance=user)
-
-    return render(
-        request,
-        "notification_settings.html",
-        {
-            "title": "Notification Settings",
-            "uses_signal": user.phone_number and user.uses_signal,
-            "signal_form": signal_form,
-            "email_form": email_form,
-            "uses_email": (not user.uses_signal and not user.telegram_user_id)
-            or user.always_uses_email,
-            "user": user,
-        },
-    )
-
-
-@login_required
-def save_signal_notification_settings(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    if request.method == "POST":
-        user_form = SignalNotificationSettingsForm(
-            request.POST, request.FILES, instance=user
-        )
-        if user_form.is_valid():
-            user_form.save()
-            uses_signal = bool(user_form.data.get("uses_signal"))
-            if uses_signal:
-                aggregator_adapter.onboard_signal(user.id)
-            return redirect("overview", member_id=user.id)
-
-
-@login_required
-def save_email_notification_settings(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    if request.method == "POST":
-        user_form = EmailNotificationSettingsForm(
-            request.POST, request.FILES, instance=user
-        )
-        if user_form.is_valid():
-            user_form.save()
-            return redirect("overview", member_id=user.id)
-
-
-@login_required
-def notification_test(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    try:
-        User.objects.get(pk=user.id)
-    except ObjectDoesNotExist as e:
-        return HttpResponse("User not found", status=404, content_type="text/plain")
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    aggregator_adapter.notification_test(user.id)
-    return redirect("notification_settings")
-
-
-@login_required
-def space_state(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-    context = aggregator_adapter.fetch_state_space()
-    context["user"] = user
-    return render(request, "space_state.html", context)
-
-
-def space_state_api(request):
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-    context = aggregator_adapter.fetch_state_space()
-
-    payload = {}
-    l = 0
-    for e in ["space_open", "lights_on", "machines", "users_in_space"]:
-        if e in context:
-            payload[e] = context[e]
-            if e == "users_in_space":
-                l = len(context[e])
-    if not is_superuser_or_bearer(request):
-        payload = {}
-
-    payload["num_users_in_space"] = l
-
-    return HttpResponse(
-        json.dumps(payload).encode("utf8"), content_type="application/json"
-    )
-
-
-@superuser_or_bearer_required
-def space_state_api_info(request):
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-    context = aggregator_adapter.fetch_state_space()
-
-    try:
-        payload = {"machines": [], "members": [], "lights": []}
-        if "machines" in context:
-            for mj in context["machines"]:
-                if "ready" in mj["state"]:
-                    continue
-                if "off" in mj["state"]:
-                    continue
-                if "deur" in mj["machine"]["name"]:
-                    continue
-                payload["machines"].append(mj["machine"]["name"])
-        if "users_in_space" in context:
-            for ij in context["users_in_space"]:
-                if "user" in ij:
-                    payload["members"].append(ij["user"]["first_name"])
-        if "lights_on" in context:
-            payload["lights"] = context["lights_on"]
-
-        return HttpResponse(
-            json.dumps(payload).encode("utf8"), content_type="application/json"
-        )
-
-    except Exception as e:
-        logger.error(
-            f"Something went wrong during json return parse from aggregator - likely compat issue: {e}"
-        )
-
-    return HttpResponse("No aggregator response", status=500, content_type="text/plain")
-
-
-@login_required
-def space_checkout(request):
-    try:
-        user = request.user
-    except User.DoesNotExist:
-        return HttpResponse(
-            "You are probably not a member-- admin perhaps?",
-            status=400,
-            content_type="text/plain",
-        )
-
-    aggregator_adapter = get_aggregator_adapter()
-    if not aggregator_adapter:
-        return HttpResponse(
-            "No aggregator configuration found", status=500, content_type="text/plain"
-        )
-
-    aggregator_adapter.checkout(user.id)
-    return redirect("space_state")
 
 
 @login_required
@@ -814,7 +453,7 @@ def amnesty(request):
             )
             if created:
                 e.changeReason = (
-                    "Added through the grand amnesty interface by {0}".format(
+                    "Added through the grant amnesty interface by {0}".format(
                         request.user
                     )
                 )

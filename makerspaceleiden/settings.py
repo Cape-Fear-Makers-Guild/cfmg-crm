@@ -7,7 +7,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import locale
-from moneyed import Money, EUR
 
 os.umask(2)
 
@@ -28,44 +27,27 @@ ALLOWED_HOSTS = ["10.11.0.158", "*"]
 # Allow users to create their own entitlement as a one off
 # bootstrapping thing.
 #
-GRAND_AMNESTY = True
+GRANT_AMNESTY = True
 
-# Harsher way to exclude storage module / top level
-STORAGE = False
 # Application definition
 
 INSTALLED_APPS = [
     "import_export",
     "simple_history",
     "search_admin_autocomplete",
-    "qr_code",
-    "djmoney",
     "makerspaceleiden",
-    "storage.apps.StorageConfig",
-    "memberbox.apps.MemberboxConfig",
     "members.apps.UserConfig",
     "acl.apps.AclConfig",
     "selfservice.apps.SelfserviceConfig",
-    "kiosk.apps.KioskConfig",
-    "ufo.apps.UfoConfig",
     "unknowntags.apps.UnknowntagsConfig",
     "servicelog.apps.ServicelogConfig",
-    "mailinglists.apps.MailinglistsConfig",
-    "chores.apps.ChoresConfig",
-    "mainssensor.apps.MainssensorConfig",
-    "kwh.apps.KwhConfig",
-    "pettycash.apps.PettycashConfig",
-    "ultimaker.apps.UltimakerConfig",
-    "spaceapi.apps.SpaceapiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    #    'autocomplete_light',
     "django.contrib.sites",
-    "revproxy",
 ]
 
 SITE_ID = 1
@@ -103,20 +85,15 @@ TEMPLATES = [
 ]
 
 SETTINGS_EXPORT = [
-    "GRAND_AMNESTY",
+    "GRANT_AMNESTY",
     "ML_ADMINURL",
-    "STORAGE",
-    "POT_ID",
-    "POT_LABEL",
     "TRUSTEES",
 ]
 
 WSGI_APPLICATION = "makerspaceleiden.wsgi.application"
 
-MAILINGLIST = "deelnemers@makerspaceleiden.nl"
 TRUSTEES = "hetbestuur@makerspaceleiden.nl"
 
-DEFAULT_FROM_EMAIL = "noc@makerspaceleiden.nl"
 # Leave it to FORCE_SCRPT do do the psotfix right
 BASE = "https://makerspaceleiden.nl"
 
@@ -219,9 +196,6 @@ IMG_VARIATIONS = {
     "large": (600, 400),
 }
 
-UFO_DEADLINE_DAYS = 14
-UFO_DISPOSE_DAYS = 7
-
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -233,17 +207,9 @@ CACHES = {
     },
 }
 
-QR_CODE_CACHE_ALIAS = "qr-code"
-
-# Set to a list to be kept informed of things like UFO
-# deadlines and what not.
+# Set to a list to be kept informed of things
 #
 ALSO_INFORM_EMAIL_ADDRESSES = []
-
-# Once a person has this many storage requests - the email
-# to the list gets an extra element highlihgting this; with
-# a ling to what the person also has in store
-STORAGE_HIGHLIGHT_LIMIT = 3
 
 UT_BEARER_SECRET = "not-so-very-secret-127.0.0.1"
 
@@ -256,43 +222,11 @@ ML_PASSWORD = "Foo"
 ML_ADMINURL = "https://mailman.foo.com/mailman"
 
 # Extact spelling as created in 'group' through the /admin/ interface.
-SENSOR_USER_GROUP = "mains Sensor Admins"
 NETADMIN_USER_GROUP = "network admins"
 
 
 # REGISTRATION_OPEN = False
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-# Payment system
-#
-# When not defined - available all; but listings limited
-# will not show people with 0-balance and no transactions
-# for PETTYCASH_NOUSE_DAYS
-# PETTYCASH_DEMO_USER_GROUP = "pettycash demo group"
-PETTYCASH_NOUSE_DAYS = 60
-PETTYCASH_ADMIN_GROUP = "pettycash admin group"
-PETTYCASH_TREASURER_GROUP = "pettycash admin group"
-PETTYCASH_TOPUP = 15
-PETTYCASH_TNS = "Stichting Makerspace Leiden"
-PETTYCASH_IBAN = "NL18RABO0123459876"
-POT_ID = 1
-POT_LABEL = "Makerspace (de zwarte Pot)"
-CURRENCIES = ["EUR"]
-
-MAX_PAY_API = Money(10.00, EUR)
-MAX_PAY_DEPOSITI = Money(100.00, EUR)
-MAX_PAY_REIMBURSE = Money(100.00, EUR)
-PAY_MAXNONCE_AGE_MINUTES = 20
-
-# Days and max number of unknown terminals to keep.
-# (accepted number of terminals is unconstrained) - this
-# is just for the short period between booting one for
-# the first time and pairing it. Once we hit MAX
-# bring it back to MIN.
-#
-PETTYCASH_TERMS_MAX_UNKNOWN = 4
-PETTYCASH_TERMS_MIN_UNKNOWN = 1
-PETTYCASH_TERMS_MINS_CUTOFF = 10
 
 try:
     from .local import *

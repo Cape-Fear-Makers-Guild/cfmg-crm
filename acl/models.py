@@ -78,6 +78,7 @@ class Machine(models.Model):
     node_name = NodeField(
         max_length=20, blank=True, help_text="Name of the controlling node"
     )
+    # TODO: make this required or auto-populate it based on the name
     node_machine_name = NodeField(
         max_length=20,
         blank=True,
@@ -92,7 +93,6 @@ class Machine(models.Model):
         blank=True,
         null=True,
     )
-    requires_instruction = models.BooleanField(default=False)
     requires_form = models.BooleanField(default=False)
     requires_permit = models.ForeignKey(
         PermitType,
@@ -282,29 +282,6 @@ class Entitlement(models.Model):
                 self.active = e.active
             except EntitlementNotFound:
                 pass
-
-        if not self.active and self.permit.permit:
-            try:
-                context = {
-                    "holder": self.holder,
-                    "issuer": self.issuer,
-                    "permit": self.permit,
-                    "domain": current_site.domain,
-                }
-
-                subject = render_to_string(
-                    "acl/notify_trustees_subject.txt", context
-                ).strip()
-                body = render_to_string("acl/notify_trustees.txt", context)
-
-                EmailMessage(
-                    subject,
-                    body,
-                    to=[self.issuer.email, settings.TRUSTEES, "dirkx@webweaving.org"],
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                ).send()
-            except Exception as e:
-                logger.critical("Failed to sent an email: {}".format(str(e)))
 
         # should we check for duplicates here too ?
         #

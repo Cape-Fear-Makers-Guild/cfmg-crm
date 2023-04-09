@@ -5,8 +5,6 @@ from simple_history.models import HistoricalRecords
 from members.models import User
 from members.models import Tag
 from acl.models import Machine, Location, PermitType, Entitlement
-from memberbox.models import Memberbox
-from storage.models import Storage
 
 import argparse
 
@@ -100,7 +98,6 @@ class Command(BaseCommand):
                     machine.description = "The " + w + " machine"
                     # machine.location = loc
                     machine.requires_form = True
-                    machine.requires_instruction = True
                     machine.requires_permit = permit
                     self.stdout.write("Machine imported {}".format(w))
                     # loc.save()
@@ -128,9 +125,3 @@ class Command(BaseCommand):
                     l = "L" + str(col) + str(row)
                 if k == 1:
                     l = "R" + str(col) + str(row)
-
-                box, wasCreated = Memberbox.objects.get_or_create(
-                    location=l, owner=member
-                )
-                box.description = "The nice box of " + str(member)
-                box.save()

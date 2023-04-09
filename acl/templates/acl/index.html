@@ -4,7 +4,7 @@
 
 <h1><hr/>API page<hr/></h1>
 
-Quick internal page to show lists for the XS control systems. Not visible to end users
+Quick internal page to show lists for the Access control systems. Not visible to end users
 as it reveals the tags.
 
 <h2>All Machines (and permitted passes)</h2>
@@ -12,7 +12,8 @@ as it reveals the tags.
 <ul>
     {% for p in lst %}
     <li> <a href="{% url 'machine_overview' p.id %}">{{ p.name }}</a>
-    (<i> {{ p.description }} </i>)
+    (<i>{{ p.description }}</i>)
+    [id={{p.id}}]
     <a href="{{p.id}}">[tags]</a>
     {% endfor %}
 </ul>
@@ -39,19 +40,7 @@ as it reveals the tags.
     <p>none</p>
 {% endif %}
 
-<h2>Instructions required</h2>
-{% if instructions %}
-<ul>
-    {% for m in instructions %}
-    <li> <a href="{{m.id}}">{{ m.name }}</a>
-    (<i> {{ m.description }} </i>)
-    {% endfor %}
-</ul>
-{% else %}
-    <p>none</p>
-{% endif %}
-
-<h2>Free for al</h2>
+<h2>Free for all</h2>
 {% if freeforall %}
 <ul>
     {% for m in freeforall %}

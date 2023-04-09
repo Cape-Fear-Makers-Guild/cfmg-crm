@@ -85,7 +85,7 @@ def unknowntags(request):
 @login_required
 def addmembertounknowntag(request, user_id=None):
     if not request.user.is_privileged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     if request.POST:
         form = SelectTagForm(request.POST)
@@ -119,7 +119,7 @@ def addmembertounknowntag(request, user_id=None):
 @login_required
 def addunknowntagtomember(request, tag_id=None):
     if not request.user.is_privileged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
     try:
         tag = Unknowntag.objects.get(pk=tag_id)
     except:

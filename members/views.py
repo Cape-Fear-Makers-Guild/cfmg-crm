@@ -16,7 +16,6 @@ from .forms import NewUserForm, NewAuditRecordForm
 
 from acl.models import Entitlement, PermitType
 from members.models import Tag, User, clean_tag_string, AuditRecord
-from mailinglists.models import Mailinglist, Subscription
 
 import logging
 import datetime
@@ -49,7 +48,7 @@ def index(request):
 @login_required
 def newmember(request):
     if not request.user.is_privileged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     if request.POST:
         form = NewUserForm(request.POST)
@@ -87,35 +86,6 @@ def newmember(request):
                         activate=form.cleaned_data.get("activate_doors"),
                     )
 
-                # Subscribe user if needed
-                for mlist_name in form.cleaned_data.get("mailing_lists"):
-                    try:
-                        mlist = Mailinglist.objects.get(name=mlist_name)
-                        s = Subscription.objects.create(
-                            mailinglist=mlist,
-                            member=newmember,
-                            active=True,
-                            digest=False,
-                        )
-                        s.subscribe()
-                        # s.changeReason("Subscribed during form based new user create")
-                        s.save()
-                    except Exception as e:
-                        logger.error(
-                            "Failed to subscribe user {} to {} : {}".format(
-                                request.user, mlist_name, e
-                            )
-                        )
-
-                # Send welcome email.
-                form = PasswordResetForm({"email": newmember.email})
-                if not form.is_valid():
-                    raise Exception("Internal issue")
-                form.save(
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    email_template_name="members/email_newmembers_invite.txt",
-                    subject_template_name="members/email_newmembers_invite_subject.txt",
-                )
                 return redirect("index")
             except IntegrityError as e:
                 logger.error("Failed to create user : {}".format(e))
@@ -151,7 +121,7 @@ def newmember(request):
 @login_required
 def sudo(request):
     if not request.user.can_escalate_to_priveleged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     if request.POST:
         form = NewAuditRecordForm(request.POST)
@@ -194,7 +164,7 @@ def sudo(request):
 
 def drop(request):
     if not request.user.can_escalate_to_priveleged:
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     record = AuditRecord(
         user=request.user, final=True, action="Drop privs from webinterface"

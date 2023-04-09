@@ -4,116 +4,43 @@
 {% block content %}
 
 {% if is_logged_in %}
-{% if wifinetworks %}
-<script>
-function showPw(fld) {
-  var x = document.getElementById(fld);
-  if (x.type === "password") {
-    x.type = "text";
-    window.setTimeout(function() { showPw(fld); }, 3000);
-  } else {
-    x.type = "password";
-  }
-}
-</script>
-<p>Passwords for members only:</p>
-<blockquote>
-<table>
-<tr><th>network/use</th><th>password</th></tr>
-{% for e in wifinetworks %}
-{%if not e.adminsonly or user|isNetAdmin or user.is_privileged %}
-  <tr>
-	<td align=left><input size=32 style="border:none" type=text value="{{ e.network }}">
-		{%if e.adminsonly %}<font color="red">*</font>{% endif %}
-	</td>
-	<td align=left><input size=32 style="border:none; font-family: monospace;" value="{{ e.password }}" id="{{ e.network }}"
-        {% if e.adminsonly %}
-		type="password"/><input style="padding:5px" type=button value=show onClick="showPw('{{ e.network }}');"
-	{%endif%}
-	/> 
-	</td>
-  </tr>
-{% endif %}
-{% endfor %}
-</table>
-</blockquote>
-{% if user|isNetAdmin %}
-<p/>
-<i><font color=red>*)</font><i> This password is only visible to network administrators. Of which you are one. Do not share outside this group - or consult with one of the trustees first.</i><p/>
-{% endif %}
-{% else %}
-There are no passwords for members at the moment.
-{% endif %}
 <h2>Manage your data</h2>
 <p>
 <ul>
-	<li><a href="https://wiki.makerspaceleiden.nl">General documentation</a>
-	<li><a href="https://wiki.makerspaceleiden.nl/mediawiki/index.php/Categorie:Tool">List of all tools</a> and their documentation.
+    <li><a href="https://www.capefearmakersguild.org/">CFMG Website</a>
 <p/>
-        <li><a href="{% url 'space_state' %}">Who is there now</a> (<i>(State of the space)</i>.
-        <li><a href="{% url 'camindex' %}">printer camera</a> (<i>(photo of buildplate of the Ultimaker 3)</i>.
-	<li><a href="/crm/kwh">Power consumption of the space</a>
-	<li><a href="{% url 'overview' %}">All members </a>
+    <li><a href="{% url 'overview' %}">All members </a>
 <p/>
-	<li><a href="{% url 'personal_page' %}">Your data</a>
-	<li><a href="{% url 'mytransactions' %}">Your cash balance</a>,  see all 
-	<a href="{% url 'balances' %}">balances</a>, the <a href="{% url 'pricelist' %}">pricelist</a> and so on.
-{%if settings.ML_ADMINURL%}
-	<li><a href="{% url 'mailinglists_edit' %}">Mailing lists subscriptions</a> and digest settings.
-	<li><a href="{% url 'mailinglists_archives' %}">Historic archives</a> of the mailing lists.
-{%if user.is_privileged %}
-	<li><a href="{% url 'mailinglists_subs' %}">Who is (not) subscribed</a> to one of the mailing lists.
-{%endif %}
-{%endif %}
-	<li><a href="{% url 'userdetails' %}">Update your personal details</a>
-	<li><a href="{% url 'password_change' %}">change your password</a>
-{%if settings.GRAND_AMNESTY %}
-	<li><a href="{% url 'amnesty' %}">Grand amnesty</a>
+    <li><a href="{% url 'personal_page' %}">Your data</a>
+    <li><a href="{% url 'userdetails' %}">Update your personal details</a>
+    <li><a href="{% url 'password_change' %}">Change your password</a>
+{%if settings.GRANT_AMNESTY %}
+    <li><a href="{% url 'amnesty' %}">Grant amnesty</a>
 {%endif %}
 <p/>
-	<li><a href="{% url 'ufo' %}">Unclaimed Floating Objects</a> -- lost and found & things about to be disposed.
+<!--    <li><a href="{% url 'members-index' %}">All machines that require instruction</a> -->
+    <li><a href="{% url 'machine_list' %}">All machines</a>
 <p/>
-<!--	<li><a href="{% url 'members-index' %}">All machines that require instruction</a> -->
-	<li><a href="{% url 'machine_list' %}">All machines</a>
-	<li><a href="{% url 'add_instruction' %}">Record instructions you've just given</a> on a machine to someone.
-<p/>
-	<li><a href="{% url 'boxes' %}">Members box management</a>
-{%  if settings.STORAGE %}
-	<li><a href="{% url 'storage' %}">Storage management</a>
-{% endif %}
-	<li><a href="{% url 'chores' %}">Chores</a>
-	<p/>
-{% if request.user|isMainsAdmin or user.is_privileged %}
-	<li> Lucas MainsSensors : <a href="{% url 'mainsindex' %}">admin interface</a>
-	<li> List of <a href="/crm/api/v1/mainssensor/resolve">sensors</a> names, descriptions and IDs.
-        <li> Or alternatively use ...<code>//crm/api/v1/mainssensor/resolve/1234</code> to get just the name (decimal number).
-	</p>
-{% endif %}
-
-{% if user|isPettycashAdmin %}
-	<li>List of <a href='{% url "unpaired" %}'>payment stations</a> and pairing.
-{% endif %}
+    <p/>
 
 {%if user.is_privileged %}
-	<li><a href="{% url 'newmember' %}">Add a NEW member</a>
-	<p/>
-	<li><a href="{% url 'pending' %}">Instructions pending approval trustee</a>
-	<li><a href="{% url 'missing_forms' %}">Missing forms</a>
-	<li><a href="{% url 'filed_forms' %}">Filed forms</a>
-	<li><a href="{% url 'userdetails' %}">Update your personal details</a>
-	<p/>
-	<li><a href="{% url 'admin:index' %}">raw database access</a>
-	<p/>
-	<li><a href="{% url 'unknowntags' %}">See unknown tags / link unknown tags to a member</a>
-	<p/>
-	<li><a href="{% url 'acl-index' %}">rfid acl stuff</a>
-        <p>
-	<li><a href="{% url 'cam53upload' %}">Upload Triodos transactions</a>
-        </p>
+    <li><a href="{% url 'newmember' %}">Add a NEW member</a>
+    <p/>
+    <li><a href="{% url 'pending' %}">Instructions pending approval trustee</a>
+    <li><a href="{% url 'missing_forms' %}">Missing forms</a>
+    <li><a href="{% url 'filed_forms' %}">Filed forms</a>
+    <li><a href="{% url 'userdetails' %}">Update your personal details</a>
+    <p/>
+    <li><a href="{% url 'admin:index' %}">raw database access</a>
+    <p/>
+    <li><a href="{% url 'unknowntags' %}">See unknown tags / link unknown tags to a member</a>
+    <p/>
+    <li><a href="{% url 'machine_overview' %}">Access Matrix</a>
+    <li><a href="{% url 'acl-index' %}">ACL Listing</a>
 {% endif %}
-	<p/>
-	<li><a href="{% url 'logout' %}?next={% url 'index' %}">logout</a>
-	</ul>
+    <p/>
+    <li><a href="{% url 'logout' %}?next={% url 'index' %}">logout</a>
+    </ul>
 {% else %}
 Please <a href="{% url 'login' %}?next={% url 'index' %}">login</a> or <a href="{% url 'password_reset' %}">reset my password</a>
 {% endif %}

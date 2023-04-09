@@ -39,7 +39,6 @@ else
     RunWithErrorCheck "python manage.py import-wifi demo/wifi.csv"
     RunWithErrorCheck "python manage.py import-machines demo/mac.csv "
     RunWithErrorCheck "python manage.py import-consolidated demo/consolidated.txt"
-    RunWithErrorCheck "python manage.py pettycash-activate-all-users"
     
     $I = Read-Host "Reset all passwords and generate invites? (Y/N Default: N)"
     if($I -eq "Y")

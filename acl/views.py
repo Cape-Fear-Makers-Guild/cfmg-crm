@@ -23,12 +23,7 @@ from ipware import get_client_ip
 from members.models import Tag, User, clean_tag_string
 from members.forms import TagForm
 
-from mailinglists.models import Mailinglist, Subscription
-
 from .models import Machine, Entitlement, PermitType, RecentUse
-
-from storage.models import Storage
-from memberbox.models import Memberbox
 
 import logging
 
@@ -36,37 +31,32 @@ logger = logging.getLogger(__name__)
 
 
 def matrix_mm(machine, member):
-    out = {"xs": False, "instructions_needed": False, "tags": []}
-    out["mid"] = machine.id
+    out = {
+        "mid": machine.id,
+        "requires_form": machine.requires_form,
+        "requires_permit": machine.requires_permit == True,
+        "out_of_order": machine.out_of_order,
+        "missing_form": False,
+        "missing_permit": False,
+        "tags": [],
+    }
 
-    out["requires_instruction"] = machine.requires_instruction
-    out["requires_permit"] = machine.requires_permit
-    out["requires_form"] = machine.requires_form
-    out["out_of_order"] = machine.out_of_order
-
-    xs = True
     # Does the machine require a form; and does the user have that form on file.
     if machine.requires_form and not member.form_on_file:
-        xs = False
+        out["missing_form"] = True
 
-    if machine.out_of_order:
-        xs = False
-
+    # Does the machine require a permit; and does the user have that training on file.
     if machine.requires_permit:
-        ents = Entitlement.objects.filter(permit=machine.requires_permit, holder=member)
-        if ents.count() < 1:
-            return out
+        ents = Entitlement.objects.filter(
+            permit=machine.requires_permit, holder=member, active=True
+        )
+        if len(ents) == 0:
+            out["missing_permit"] = True
 
-        for e in ents:
-            out["has_permit"] = True
-            if e.active == False:
-                xs = False
-
-    for tag in Tag.objects.filter(owner=member):
-        out["tags"].append(tag.tag)
-
-    out["activated"] = xs
-    out["xs"] = xs
+    out["access"] = not (
+        out["missing_form"] or out["missing_permit"] or out["out_of_order"]
+    )
+    out["tags"] = [tag.tag for tag in Tag.objects.filter(owner=member)]
 
     return out
 
@@ -83,7 +73,6 @@ def matrix_m(machine):
 def api_index(request):
     lst = Machine.objects.order_by()
     perms = {}
-    instructions = []
     ffa = []
     for m in lst:
         if m.requires_permit:
@@ -91,15 +80,11 @@ def api_index(request):
                 perms[m.requires_permit.name] = []
             perms[m.requires_permit.name].append(m)
         else:
-            if m.requires_instruction:
-                instructions.append(m)
-            else:
-                ffa.append(m)
+            ffa.append(m)
 
     context = {
         "lst": lst,
         "perms": perms,
-        "instructions": instructions,
         "freeforall": ffa,
         "has_permission": request.user.is_authenticated,
     }
@@ -109,18 +94,16 @@ def api_index(request):
 def api_index_legacy2(request):
     ip, local = get_client_ip(request, proxy_trusted_ips=("127.0.0.1", "::1"))
     if not (local or (request.user and request.user.is_superuser)):
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access Denied", status=403, content_type="text/plain")
 
     out = ""
     for member in User.objects.filter(is_active=True):
-
         machines = []
         for machine in (
             Machine.objects.all()
             .exclude(requires_permit=None)
             .exclude(node_machine_name=None)
         ):
-
             if machine.requires_form and not member.form_on_file:
                 continue
 
@@ -236,9 +219,6 @@ def member_overview(request, member_id=None):
         )
 
     machines = Machine.objects.order_by()
-    boxes = Memberbox.objects.all().filter(owner=member)
-    storage = Storage.objects.all().filter(owner=member)
-    subscriptions = Subscription.objects.all().filter(member=member)
 
     normal_permits = {}
     for m in machines:
@@ -258,11 +238,8 @@ def member_overview(request, member_id=None):
         "title": member.first_name + " " + member.last_name,
         "member": member,
         "machines": machines,
-        "storage": storage,
-        "boxes": boxes,
         "lst": lst,
         "permits": specials,
-        "subscriptions": subscriptions,
         "user": request.user,
         "has_permission": request.user.is_authenticated,
     }
@@ -436,7 +413,7 @@ def api_gettaginfo(request):
 
 @csrf_exempt
 @superuser_or_bearer_required
-def api_getok(request, machine=None):
+def api_getok(request):
     if request.POST:
         try:
             tagstr = clean_tag_string(request.POST.get("tag"))
@@ -451,9 +428,11 @@ def api_getok(request, machine=None):
             return HttpResponse("No valid tag", status=400, content_type="text/plain")
 
         try:
-            machine = Machine.objects.get(node_machine_name=machine)
-        except ObjectDoesNotExist as e:
-            logger.error("Machine not found to getok, denied.")
+            machine_obj = Machine.objects.get(
+                node_machine_name=request.POST.get("machine")
+            )
+        except Exception as e:
+            logger.error("No or invalid Machine passed to getok, denied.")
             return HttpResponse(
                 "Machine not found", status=404, content_type="text/plain"
             )
@@ -461,23 +440,23 @@ def api_getok(request, machine=None):
             tag = Tag.objects.get(tag=tagstr)
         except ObjectDoesNotExist as e:
             logger.error(
-                "Tag {} on machine {} not found, denied.".format(tagstr, machine)
+                "Tag {} on machine {} not found, denied.".format(tagstr, machine_obj)
             )
             return HttpResponse(
                 "Tag/Owner not found", status=404, content_type="text/plain"
             )
 
         owner = tag.owner
-        ok = matrix_mm(machine, owner)
+        ok = matrix_mm(machine_obj, owner)
 
-        if ok["xs"]:
+        if ok["access"]:
             try:
-                r = RecentUse(user=owner, machine=machine)
+                r = RecentUse(user=owner, machine=machine_obj)
                 r.save()
             except Exception as e:
                 logger.error(
                     "Unexpected error when recording machine use of {} by {}: {}".format(
-                        machine, owner, e
+                        machine_obj, owner, e
                     )
                 )
 
@@ -490,15 +469,23 @@ def api_getok(request, machine=None):
                 "Unexpected error when recording tag use on {}: {}".format(tag, e)
             )
 
-        out = userdetails(owner)
+        user = userdetails(owner)
+        out = {
+            "name": user["name"],
+            "machine": str(machine_obj),
+        }
         if tag.description:
             out["tag"] = tag.description
-
-        out["requires_instruction"] = machine.requires_instruction
-        out["requires_permit"] = str(machine.requires_permit)
-        out["requires_form"] = machine.requires_form
-        out["machine"] = str(machine)
-        out["access"] = ok["xs"]
+        keys_to_copy = [
+            "access",
+            "out_of_order",
+            "requires_permit",
+            "requires_form",
+            "missing_permit",
+            "missing_form",
+        ]
+        for key in keys_to_copy:
+            out[key] = ok[key]
 
         return JsonResponse(out)
 

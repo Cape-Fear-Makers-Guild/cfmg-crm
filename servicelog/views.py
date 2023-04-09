@@ -27,15 +27,9 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db.models import Q
 from simple_history.admin import SimpleHistoryAdmin
 from django.template.loader import render_to_string, get_template
-from django.core.mail import EmailMessage
 from django.conf import settings
 from django.contrib.admin.sites import AdminSite
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import EmailMultiAlternatives
-
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
 
 import datetime
 import uuid
@@ -65,40 +59,6 @@ from servicelog.forms import ServicelogForm
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-def emailNotification(item, template, toinform=[], context={}):
-    if settings.ALSO_INFORM_EMAIL_ADDRESSES:
-        toinform.extend(settings.ALSO_INFORM_EMAIL_ADDRESSES)
-
-    to = {}
-    for person in toinform:
-        to[person] = True
-    # We use a dict rather than an array to prune any duplicates.
-    to = to.keys()
-
-    context["base"] = settings.BASE
-    context["item"] = item
-
-    msg = MIMEMultipart("mixed")
-    subject = render_to_string("{}_subject.txt".format(template), context)
-
-    part1 = MIMEText(render_to_string("{}.txt".format(template), context), "plain")
-    msg.attach(part1)
-
-    if item.image:
-        part2 = MIMEMultipart("mixed")
-        ext = item.image.name.split(".")[-1]
-        attachment = MIMEImage(item.image.medium.read(), ext)
-        attachment.add_header("Content-ID", str(item.pk))
-        part2.attach(attachment)
-        msg.attach(part2)
-
-    email = EmailMessage(
-        subject.strip(), None, to=to, from_email=settings.DEFAULT_FROM_EMAIL
-    )
-    email.attach(msg)
-    email.send()
 
 
 @login_required
@@ -195,14 +155,6 @@ def servicelog_crud(request, machine_id=None, servicelog_id=None):
                         )
                     )
                     machine.save()
-
-                if servicelog_id == None or old_state != new_state:
-                    emailNotification(
-                        item,
-                        "email_notification",
-                        toinform=[settings.MAILINGLIST],
-                        context={"machine": machine, "user": request.user},
-                    )
 
             except Exception as e:
                 logger.error("Unexpected error during update of tag: {}".format(e))

@@ -48,7 +48,7 @@ def superuser(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
@@ -63,7 +63,7 @@ def superuser_or_bearer_required(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
@@ -88,7 +88,7 @@ def user_or_kiosk_required(function):
         request.POST
 
         # raise PermissionDenied
-        return HttpResponse("XS denied", status=403, content_type="text/plain")
+        return HttpResponse("Access denied", status=403, content_type="text/plain")
 
     return wrap
 
@@ -105,18 +105,3 @@ def login_or_priveleged(function):
         return function(request, *args, **kwargs)
 
     return wrap
-
-
-def login_and_treasurer(function):
-    @wraps(function)
-    def wrap(request, *args, **kwargs):
-        if (
-            not request.user.is_anonymous
-            and request.user.is_privileged
-            and request.user.groups.filter(
-                name=settings.PETTYCASH_TREASURER_GROUP
-            ).exists()
-        ):
-            return function(request, *args, **kwargs)
-
-        return HttpResponse("XS denied", status=403, content_type="text/plain")

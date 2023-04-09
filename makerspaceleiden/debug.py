@@ -1,7 +1,8 @@
-# For DEVLOPMNET  - fake bacend
+# For DEVELOPMENT  - fake backend
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 MEDIA_ROOT = "/tmp"
 UT_BEARER_SECRET = "Foo"
+# ID of the Doors permit
 DOORS = 7
 
 import os
