@@ -2,11 +2,11 @@
 set -e
 VERSION=${VERSION:-3}
 
+# Uncomment if not running in the container
+#
 # python${VERSION}  -mvenv venv
 # . venv/bin/activate
-
-# pip install --upgrade pip
-# pip${VERSION} install -r requirements.txt 
+# pip${VERSION} install -r requirements.txt
 
 test -f db.sqlite3 && rm -f db.sqlite3
 python${VERSION} manage.py makemigrations
@@ -27,4 +27,4 @@ else
 	grep @  demo/consolidated.txt
 fi
 
-python${VERSION} manage.py runserver
+python${VERSION} manage.py runserver 0.0.0.0:8000
