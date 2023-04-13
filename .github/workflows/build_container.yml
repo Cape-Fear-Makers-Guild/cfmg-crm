@@ -24,7 +24,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: cape-fear-makers-guild/cfmg-crm
+  IMAGE_NAME: cape-fear-makers-guild/gandalf
 
 jobs:
   build:
