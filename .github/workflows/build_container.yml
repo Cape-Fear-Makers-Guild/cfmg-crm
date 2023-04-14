@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - Dockerfile
+      - .github/workflows/build_container.yml
 
   # Always have a base image ready to go - this is a nightly build
   schedule:
