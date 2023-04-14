@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - Dockerfile
+      - .github/workflows/build_container.yml
 
   # Always have a base image ready to go - this is a nightly build
   schedule:
@@ -24,7 +25,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: cape-fear-makers-guild/cfmg-crm
+  IMAGE_NAME: cape-fear-makers-guild/gandalf
 
 jobs:
   build:
@@ -42,6 +43,12 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: GHCR Login
       if: (github.event_name != 'pull_request')
       uses: docker/login-action@v2
@@ -56,4 +63,5 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
+        platforms: linux/amd64,linux/arm64
         labels: ${{ steps.meta.outputs.labels }}

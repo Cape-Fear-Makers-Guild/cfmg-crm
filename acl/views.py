@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from django.views.decorators.csrf import csrf_exempt
-from makerspaceleiden.decorators import superuser_or_bearer_required
+from gandalf.decorators import superuser_or_bearer_required
 
 import json
 from django.http import JsonResponse

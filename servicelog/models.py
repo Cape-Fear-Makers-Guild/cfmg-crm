@@ -13,7 +13,7 @@ from stdimage.models import StdImageField
 from stdimage.validators import MinSizeValidator, MaxSizeValidator
 from django.urls import reverse
 
-from makerspaceleiden.utils import upload_to_pattern
+from gandalf.utils import upload_to_pattern
 
 
 from django.db.models.signals import pre_delete, pre_save

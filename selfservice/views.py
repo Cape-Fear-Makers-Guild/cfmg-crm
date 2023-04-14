@@ -15,7 +15,7 @@ from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.forms import widgets
 
-from makerspaceleiden.decorators import (
+from gandalf.decorators import (
     superuser_or_bearer_required,
     is_superuser_or_bearer,
 )
@@ -35,42 +35,6 @@ from selfservice.forms import (
     SignalNotificationSettingsForm,
     EmailNotificationSettingsForm,
 )
-
-
-def send_email_verification(
-    request, user, new_email, old_email=None, template="email_verification_email.txt"
-):
-    current_site = get_current_site(request)
-    subject = "Confirm your email adddress ({})".format(current_site.domain)
-    context = {
-        "has_permission": request.user.is_authenticated,
-        "request": request,
-        "user": user,
-        "new_email": new_email,
-        "old_email": old_email,
-        "domain": current_site.domain,
-        # possibly changed with Django 2.2
-        # 'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-        "token": email_check_token.make_token(user),
-    }
-
-    msg = render_to_string(template, context)
-    EmailMessage(
-        subject, msg, to=[user.email], from_email=settings.DEFAULT_FROM_EMAIL
-    ).send()
-
-    if old_email:
-        subject = "[spacebot] User {} {} is changing their email address".format(
-            user.first_name, user.last_name
-        )
-        msg = render_to_string("email_verification_email_inform.txt", context)
-        EmailMessage(
-            subject,
-            msg,
-            to=[old_email, settings.TRUSTEES],
-            from_email=settings.DEFAULT_FROM_EMAIL,
-        ).send()
 
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):

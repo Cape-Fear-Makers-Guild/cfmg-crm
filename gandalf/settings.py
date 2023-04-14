@@ -1,5 +1,5 @@
 """
-Django settings for makerspaceleiden project.
+Django settings for gandalf project.
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "import_export",
     "simple_history",
     "search_admin_autocomplete",
-    "makerspaceleiden",
+    "gandalf",
     "members.apps.UserConfig",
     "acl.apps.AclConfig",
     "selfservice.apps.SelfserviceConfig",
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "makerspaceleiden.urls"
+ROOT_URLCONF = "gandalf.urls"
 
 TEMPLATE_LOADERS = ("django.template.loaders.app_directories.load_template_source",)
 
@@ -87,15 +87,12 @@ TEMPLATES = [
 SETTINGS_EXPORT = [
     "GRANT_AMNESTY",
     "ML_ADMINURL",
-    "TRUSTEES",
 ]
 
-WSGI_APPLICATION = "makerspaceleiden.wsgi.application"
-
-TRUSTEES = "hetbestuur@makerspaceleiden.nl"
+WSGI_APPLICATION = "gandalf.wsgi.application"
 
 # Leave it to FORCE_SCRPT do do the psotfix right
-BASE = "https://makerspaceleiden.nl"
+BASE = "https://gandalf.cfmakers.net"
 
 MSL_USER = 63
 SETTINGS_EXPORT.append("MSL_USER")
@@ -232,6 +229,6 @@ try:
     from .local import *
 except ImportError:
     print(
-        "WARNING -- no local configs. You propably want to copy makerspaceleiden/debug.py to local.py & tweak it !!"
+        "WARNING -- no local configs. You propably want to copy gandalf/debug.py to local.py & tweak it !!"
     )
     pass

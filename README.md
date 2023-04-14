@@ -1,3 +1,12 @@
+![you shall not pass](assets/gandalf.jpg)
+
+# Gandalf
+
+Gandalf is Cape Fear Maker's Guild's access control system. This repo hosts the
+server-side code. The client-side ESP8266 code is a WIP. This repo is a stripped
+down fork of [makerspaceleiden's
+CRM](https://github.com/MakerSpaceLeiden/makerspaceleiden-crm).
+
 # Quick test/install
 
 To build and run a containerized copy of the code:
@@ -12,13 +21,6 @@ $ docker run -p 127.0.0.1:80:8000 cfmg:latest ./loaddemo.sh
 
 Then go to [`http://localhost/`](http://localhost/) and login using
 the accounts created & shown to you during the loaddemo.sh script.
-
-# About
-
-This is the server-side of the Cape Fear Maker's Guild's access control
-system. The client-side code is a WIP. This repo is a stripped down fork of
-[makerspaceleiden's
-CRM](https://github.com/MakerSpaceLeiden/makerspaceleiden-crm).
 
 # Requirements
 

@@ -13,7 +13,7 @@ from acl.models import Entitlement, PermitType
 
 from .forms import SelectUserForm, SelectTagForm
 
-from makerspaceleiden.decorators import superuser_or_bearer_required
+from gandalf.decorators import superuser_or_bearer_required
 
 import logging
 import datetime
