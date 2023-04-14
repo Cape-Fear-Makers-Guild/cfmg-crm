@@ -9,14 +9,19 @@ CRM](https://github.com/MakerSpaceLeiden/makerspaceleiden-crm).
 
 # Quick test/install
 
+To run the latest pre-built image:
+```console
+$ docker run -p 127.0.0.1:80:8000 ghcr.io/cape-fear-makers-guild/gandalf:main ./loaddemo.sh
+```
+
 To build and run a containerized copy of the code:
 ```console
 $ docker compose up -d
 ```
 Or if you don't have docker-compose installed:
 ```console
-$ docker build -t cfmg:latest .
-$ docker run -p 127.0.0.1:80:8000 cfmg:latest ./loaddemo.sh
+$ docker build -t gandalf:latest .
+$ docker run -p 127.0.0.1:80:8000 gandalf:latest ./loaddemo.sh
 ```
 
 Then go to [`http://localhost/`](http://localhost/) and login using
