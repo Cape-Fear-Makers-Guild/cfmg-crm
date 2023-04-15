@@ -22,7 +22,7 @@ SECRET_KEY = "6mh_k^thni&-6)!sfz#7i_6i@(6jesl&lrxba)#&nemt-dc0d7"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.11.0.158", "*"]
+ALLOWED_HOSTS = ["192.168.86.*", "127.0.0.1", "gandalf.cfmakers.net"]
 
 # Allow users to create their own entitlement as a one off
 # bootstrapping thing.
@@ -86,7 +86,6 @@ TEMPLATES = [
 
 SETTINGS_EXPORT = [
     "GRANT_AMNESTY",
-    "ML_ADMINURL",
 ]
 
 WSGI_APPLICATION = "gandalf.wsgi.application"
@@ -136,7 +135,7 @@ if not os.getenv("LANG"):
     os.environ["LANG"] = LANG
     # locale.setlocale(locale.LANG, LANG)
 
-TIME_ZONE = "Europe/Amsterdam"
+TIME_ZONE = "America/New_York"
 
 USE_I18N = True
 
@@ -153,7 +152,7 @@ SHORT_DATE_FORMAT = "Y-m-d"
 YEAR_MONTH_FORMAT = r"Y-m"
 MONTH_DAY_FORMAT = r"m-d"
 SHORT_DATETIME_FORMAT = "Y-m-d G:i"
-FIRST_DAY_OF_WEEK = 1  # Monday
+FIRST_DAY_OF_WEEK = 0  # Sunday
 
 DECIMAL_SEPARATOR = ","
 THOUSAND_SEPARATOR = "."
@@ -204,19 +203,13 @@ CACHES = {
     },
 }
 
-# Set to a list to be kept informed of things
-#
-ALSO_INFORM_EMAIL_ADDRESSES = []
-
-UT_BEARER_SECRET = "not-so-very-secret-127.0.0.1"
+# Password for the access control clients
+UT_BEARER_SECRET = "Foo"
 
 # Only show the past 7 days of unknown tags. And up to 10.
 #
 UT_DAYS_CUTOFF = 7
 UT_COUNT_CUTOFF = 10
-
-ML_PASSWORD = "Foo"
-ML_ADMINURL = "https://mailman.foo.com/mailman"
 
 # Extact spelling as created in 'group' through the /admin/ interface.
 NETADMIN_USER_GROUP = "network admins"

@@ -5,7 +5,7 @@ LOGOUT_REDIRECT_URL = "/crm/"
 STATIC_URL = "/crm-static/"
 MEDIA_ROOT = "/usr/local/makerspaceleiden-crm/var/media"
 DEBUG = False
-with open("/etc/crm_secret_key.txt") as f:
+with open("/etc/gandalf_secret_key.txt") as f:
     SECRET_KEY = f.read().strip()
 SECURE_HSTS_SECONDS = 120
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
