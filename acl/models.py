@@ -15,9 +15,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from members.models import User
 from django.contrib.sites.models import Site
 
+import re
 import datetime
 import logging
-import inspect
 
 logger = logging.getLogger(__name__)
 
@@ -67,21 +67,25 @@ class Location(models.Model):
         return self.name
 
 
+def make_lower_alphanum(value):
+    return re.sub(r"\W+", "", str(value).lower())
+
+
 class NodeField(models.CharField):
     def get_prep_value(self, value):
-        return str(value).lower()
+        return make_lower_alphanum(value)
 
 
 class Machine(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
     node_name = NodeField(
-        max_length=20, blank=True, help_text="Name of the controlling node"
+        max_length=40, blank=True, help_text="Name of the controlling node"
     )
     # TODO: make this required or auto-populate it based on the name
     node_machine_name = NodeField(
-        max_length=20,
-        blank=True,
+        max_length=40,
+        default="",
         help_text="Name of device or machine used by the node",
     )
 
@@ -105,6 +109,11 @@ class Machine(models.Model):
     out_of_order = models.BooleanField(default=False)
 
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if self.node_machine_name == "":
+            self.node_machine_name = make_lower_alphanum(self.name)
+        super().save(*args, **kwargs)
 
     def path(self):
         return reverse("machine_overview", kwargs={"machine_id": self.id})
