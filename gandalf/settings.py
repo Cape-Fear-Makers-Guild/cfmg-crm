@@ -22,7 +22,7 @@ SECRET_KEY = "6mh_k^thni&-6)!sfz#7i_6i@(6jesl&lrxba)#&nemt-dc0d7"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.86.*", "127.0.0.1", "gandalf.cfmakers.net"]
+ALLOWED_HOSTS = ["127.0.0.1", "gandalf.cfmakers.net"]
 
 # Allow users to create their own entitlement as a one off
 # bootstrapping thing.
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    "allow_cidr.middleware.AllowCIDRMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -62,6 +63,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+ALLOWED_CIDR_NETS = ["192.168.86.0/24"]
 
 ROOT_URLCONF = "gandalf.urls"
 

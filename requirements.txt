@@ -32,3 +32,6 @@ jsonfield2
 # Reverse proxy for the 3D printers
 requests
 python-dateutil
+
+# For easier ALLOWED_HOSTS
+django-allow-cidr
