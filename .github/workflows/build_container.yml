@@ -4,7 +4,7 @@ on:
   # Enable just for testing container builds
   pull_request:
     paths:
-      - Dockerfile
+      - server/Dockerfile
       - .github/workflows/build_container.yml
 
   # Always have a base image ready to go - this is a nightly build
@@ -61,7 +61,7 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: server
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         platforms: linux/amd64,linux/arm/v7
@@ -72,7 +72,7 @@ jobs:
       if: ${{ github.event_name != 'pull_request' }}
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: server
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         platforms: linux/amd64,linux/arm/v7
