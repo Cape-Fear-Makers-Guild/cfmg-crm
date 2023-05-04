@@ -6,6 +6,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import json
 import locale
 
 os.umask(2)
@@ -13,21 +14,51 @@ os.umask(2)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+# TODO: read https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "6mh_k^thni&-6)!sfz#7i_6i@(6jesl&lrxba)#&nemt-dc0d7"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+def getEnvStrOrDefault(name: str, default: str) -> str:
+    val = os.getenv(name)
+    if not val:
+        print("Missing {} env var, falling back to default: {}".format(name, default))
+        return default
+    return val
 
-ALLOWED_HOSTS = ["127.0.0.1", "gandalf.cfmakers.net"]
 
-# Allow users to create their own entitlement as a one off
-# bootstrapping thing.
-#
-GRANT_AMNESTY = True
+def getEnvStrOrRaise(name: str) -> str:
+    val = os.getenv(name)
+    if not val:
+        raise RuntimeError("Missing {} env var".format(name))
+    return val
+
+
+def getEnvBoolOrDefault(name: str, default: bool) -> bool:
+    env_val = getEnvStrOrDefault(name, json.dumps(default))
+    return json.loads(env_val.lower())
+
+
+SECRET_KEY = getEnvStrOrDefault("DJANGO_SECRET_KEY", "TODO")
+UT_BEARER_SECRET = getEnvStrOrDefault("GANDALF_BEARER_SECRET", "Foo")
+GRANT_AMNESTY = getEnvBoolOrDefault("GANDALF_GRANT_AMNESTY", True)
+DEBUG = getEnvBoolOrDefault("DJANGO_DEBUG", True)
+
+# TODO: verify these settings are what we want and actually work
+if getEnvBoolOrDefault("DJANGO_ENABLE_SECURE_SETTINGS", False):
+    SECURE_HSTS_SECONDS = 120
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+
+ALLOWED_HOSTS = ["127.0.0.1"]
+env_allowed_hosts = os.getenv("DJANGO_ALLOWED_HOSTS")
+if env_allowed_hosts:
+    ALLOWED_HOSTS.append(env_allowed_hosts)
 
 # Application definition
 
@@ -64,7 +95,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ALLOWED_CIDR_NETS = ["192.168.86.0/24"]
+env_allowed_cidr = os.getenv("DJANGO_ALLOWED_HOSTS")
+ALLOWED_CIDR_NETS = []
+if env_allowed_cidr:
+    ALLOWED_CIDR_NETS.append(env_allowed_cidr)
 
 ROOT_URLCONF = "gandalf.urls"
 
@@ -93,22 +127,28 @@ SETTINGS_EXPORT = [
 
 WSGI_APPLICATION = "gandalf.wsgi.application"
 
-# Leave it to FORCE_SCRPT do do the psotfix right
-BASE = "https://gandalf.cfmakers.net"
-
-MSL_USER = 63
-SETTINGS_EXPORT.append("MSL_USER")
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+db_engine = getEnvStrOrDefault("DJANGO_DB_ENGINE", "sqlite")
+if db_engine in ["sqlite", "sqlite3", "django.db.backends.sqlite3"]:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": getEnvStrOrRaise("DJANGO_DB_ENGINE"),
+            "NAME": getEnvStrOrRaise("DJANGO_DB_NAME"),
+            "USER": getEnvStrOrRaise("DJANGO_DB_USER"),
+            "PASSWORD": getEnvStrOrRaise("DJANGO_DB_PASSWORD"),
+            "HOST": getEnvStrOrRaise("DJANGO_DB_HOST"),
+            "PORT": getEnvStrOrRaise("DJANGO_DB_PORT"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -133,12 +173,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-if not os.getenv("LANG"):
-    LANG = "en_US.UTF-8"
-    os.environ["LANG"] = LANG
-    # locale.setlocale(locale.LANG, LANG)
-
-TIME_ZONE = "America/New_York"
+env_TZ = os.getenv("TZ")
+TIME_ZONE = "America/New_York" if not env_TZ else env_TZ
 
 USE_I18N = True
 
@@ -206,9 +242,6 @@ CACHES = {
     },
 }
 
-# Password for the access control clients
-UT_BEARER_SECRET = "Foo"
-
 # Only show the past 7 days of unknown tags. And up to 10.
 #
 UT_DAYS_CUTOFF = 7
@@ -217,14 +250,4 @@ UT_COUNT_CUTOFF = 10
 # Extact spelling as created in 'group' through the /admin/ interface.
 NETADMIN_USER_GROUP = "network admins"
 
-
-# REGISTRATION_OPEN = False
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-try:
-    from .local import *
-except ImportError:
-    print(
-        "WARNING -- no local configs. You propably want to copy gandalf/debug.py to local.py & tweak it !!"
-    )
-    pass

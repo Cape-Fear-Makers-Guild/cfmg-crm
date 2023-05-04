@@ -1,32 +1,20 @@
-FORCE_SCRIPT_NAME = "/crm"
-LOGIN_URL = "/crm/login/"
-LOGIN_REDIRECT_URL = "/crm/"
-LOGOUT_REDIRECT_URL = "/crm/"
-STATIC_URL = "/crm-static/"
-MEDIA_ROOT = "/usr/local/makerspaceleiden-crm/var/media"
-DEBUG = False
-with open("/etc/gandalf_secret_key.txt") as f:
-    SECRET_KEY = f.read().strip()
-SECURE_HSTS_SECONDS = 120
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_BROWSER_XSS_FILTER = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-X_FRAME_OPTIONS = "DENY"
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_PRELOAD = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+import os
+
+# FORCE_SCRIPT_NAME = "/crm"
+# LOGIN_URL = "/crm/login/"
+# LOGIN_REDIRECT_URL = "/crm/"
+# LOGOUT_REDIRECT_URL = "/crm/"
+# STATIC_URL = "/crm-static/"
+# MEDIA_ROOT = "/usr/local/makerspaceleiden-crm/var/media"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "OPTIONS": {
-            "read_default_file": "/usr/local/makerspaceleiden-crm/makerspaceleiden/my.cnf",
+            "read_default_file": "/etc/gandalf/db.cnf",
         },
     }
 }
-
-EMAIL_BACKEND = "django_sendmail_backend.backends.EmailBackend"
 
 import sys
 
@@ -45,7 +33,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "/var/log/crm/crm-debug.log",
+            "filename": "/var/log/gandalf-debug.log",
             "maxBytes": 1024 * 1024,
             "backupCount": 10,
             "formatter": "standard",
@@ -92,20 +80,3 @@ LOGGING = {
         },
     },
 }
-ALSO_INFORM_EMAIL_ADDRESSES = ["deelnemers@mailman.makerspaceleiden.nl"]
-
-# v1 legacy
-DOORS = 3
-with open("/etc/crm_v1_ss.txt") as f:
-    LV1_SECRET = f.read().strip()
-
-with open("/etc/crm_uk_bearer_secret.txt") as f:
-    UT_BEARER_SECRET = f.read().strip()
-
-GRANT_AMNESTY = False
-
-ML_ADMINURL = "https://mailman.makerspaceleiden.nl/mailman"
-with open("/etc/crm_ml_secret.txt") as f:
-    ML_PASSWORD = f.read().strip()
-
-POT_ID = 63

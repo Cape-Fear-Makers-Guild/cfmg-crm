@@ -1,7 +1,18 @@
 version: '3.8'
 services:
-   web:
-       build: .
-       command: ./loaddemo.sh
-       ports:
-           - 80:8000
+  web:
+    build: .
+    command: ./loaddemo.sh
+    ports:
+      - 8000:8000
+    environment:
+      TZ: "America/New_York"
+      DJANGO_DEBUG: True
+      DJANGO_SECRET_KEY: "randomStuff"
+      GANDALF_BEARER_SECRET: "Foo"
+      GANDALF_GRANT_AMNESTY: True
+      DJANGO_ENABLE_SECURE_SETTINGS: False
+      DJANGO_DB_ENGINE: "sqlite"
+      #DJANGO_ALLOWED_HOSTS: 192.168.1.2
+      #DJANGO_ALLOWED_CIDR_NETS: "192.168.1.0/24"
+      #DJANGO_BASE: "https://gandalf.cfmakers.net"
