@@ -272,21 +272,12 @@ class IBANSaltedHash(models.Model):
         e.delete()
 
 
-def clean_tag_string(tag):
-    try:
-        bts = [
-            b
-            for b in re.compile("[^0-9]+").split(tag.upper())
-            if b is not None and str(b) != "" and int(b) >= 0 and int(b) < 256
-        ]
-        if len(bts) < 3:
-            return None
-        return "-".join(bts)
-
-    except ValueError as e:
-        pass
-
-    return None
+def clean_tag_string(tag: str):
+    pattern = r"^([a-zA-Z0-9]+-){2,}[a-zA-Z0-9]+$"
+    if re.match(pattern, tag):
+        return tag
+    else:
+        return None
 
 
 # Handle image cleanup.

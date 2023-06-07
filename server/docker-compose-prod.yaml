@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    command: ./loaddemo.sh
+    ports:
+      - 8000:8000
+    environment:
+      TZ: "America/New_York"
+      DJANGO_DEBUG: False
+      # To generate a real secret key, run `tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 50  ; echo`
+      DJANGO_SECRET_KEY: "randomStuff"
+      GANDALF_BEARER_SECRET: "Foo"
+      GANDALF_GRANT_AMNESTY: False
+      DJANGO_ENABLE_SECURE_SETTINGS: True
+      #DJANGO_ALLOWED_HOSTS: 192.168.1.2
+      #DJANGO_ALLOWED_CIDR_NETS: "192.168.1.0/24"
+      #DJANGO_BASE: "https://gandalf.cfmakers.net"
+      DJANGO_DB_ENGINE: "django.db.backends.postgresql"
+      DJANGO_DB_NAME: ""
+      DJANGO_DB_USER: ""
+      DJANGO_DB_PASSWORD: ""
+      DJANGO_DB_HOST: ""
+      DJANGO_DB_PORT: ""

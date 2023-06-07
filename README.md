@@ -16,12 +16,14 @@ $ docker run -p 127.0.0.1:80:8000 ghcr.io/cape-fear-makers-guild/gandalf:main ./
 
 To build and run a containerized copy of the code:
 ```console
-$ docker compose up -d
+cd server
+docker compose up -d
 ```
 Or if you don't have docker-compose installed:
 ```console
-$ docker build -t gandalf:latest .
-$ docker run -p 127.0.0.1:80:8000 gandalf:latest ./loaddemo.sh
+cd server
+docker build -t gandalf:latest .
+docker run -p 127.0.0.1:80:8000 gandalf:latest ./loaddemo.sh
 ```
 
 Then go to [`http://localhost/`](http://localhost/) and login using
