@@ -55,7 +55,7 @@ if getEnvBoolOrDefault("DJANGO_ENABLE_SECURE_SETTINGS", False):
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1", "gandalf.cfmakers.net"]
 env_allowed_hosts = os.getenv("DJANGO_ALLOWED_HOSTS")
 if env_allowed_hosts:
     ALLOWED_HOSTS.append(env_allowed_hosts)
@@ -95,8 +95,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-env_allowed_cidr = os.getenv("DJANGO_ALLOWED_HOSTS")
-ALLOWED_CIDR_NETS = []
+env_allowed_cidr = os.getenv("DJANGO_ALLOWED_CIDR")
+ALLOWED_CIDR_NETS = ["192.168.86.0/24"]
 if env_allowed_cidr:
     ALLOWED_CIDR_NETS.append(env_allowed_cidr)
 
